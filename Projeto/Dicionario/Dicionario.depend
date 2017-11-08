@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1510101312 source:d:\google drive\engenharia de computação\semestre 4\algoritmos e estrutura de dados 2\trabalho 1\projeto\dicionario\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

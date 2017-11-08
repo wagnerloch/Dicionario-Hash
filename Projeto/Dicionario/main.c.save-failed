@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void adicionarPalavraAtual ();
+void removerPalavraAtual ();
+int calcularHash (int palavra);
+int transformarPalavra (char *palavra);
+
+typedef struct {
+	char palavras[100];
+} Tabela;
+
+char palavraFinal [2] = "*";
+char comandoAdicionar [2] = "+";
+char comandoRemover [2] = "-";
+char palavraAtual [100];
+char ultima [100];
+int tamanhoTabela = 50;
+Tabela *tabela;
+
+
+int main() {
+    tabela = (Tabela*)calloc(tamanhoTabela, sizeof(Tabela));
+    while ((scanf(" %s", palavraAtual)) && (strcmp(palavraAtual, palavraFinal) != 0)) {
+        if (strcmp(palavraAtual, comandoAdicionar) == 0) {
+            adicionarPalavraAtual ();
+        }
+        else if (strcmp(palavraAtual, comandoRemover) == 0) {
+            removerPalavraAtual ();
+        }
+        strcpy(ultima, palavraAtual);
+        int posicao = calcularHash(transformarPalavra(palavraAtual));
+        printf("Posicao: %d\n", posicao);
+    }
+    strcpy(tabela[11].palavras, palavraAtual);
+    int i=0;
+    for (i = 0; i < tamanhoTabela; i++) {
+        printf("%d %s\n", i, *tabela->palavras);
+    }
+    return 0;
+}
+
+void adicionarPalavraAtual () {
+    if (strcmp(ultima, comandoAdicionar) == 0) {
+        printf ("fail\n");
+    }
+    else {
+        strcpy(tabela[11].palavras, palavraAtual);
+    }
+}
+
+void removerPalavraAtual () {
+    if (strcmp(ultima, comandoRemover) == 0) {
+        printf ("fail\n");
+    }
+}
+
+int transformarPalavra (char *palavra) {
+    int i;
+    int somaAscii = 0;
+    for (i = 0; i < strlen(palavra); i++) {
+        somaAscii += palavra[i];
+    }
+    return somaAscii;
+}
+
+int calcularHash (int palavra) {
+    return palavra%tamanhoTabela;
+}
