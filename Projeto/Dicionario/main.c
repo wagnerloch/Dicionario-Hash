@@ -5,7 +5,7 @@
 void imprimirTabela ();
 void adicionarPalavra (char *palavra);
 void removerPalavra (char *palavra);
-int buscarPalavra (char *palavra);
+int buscarPalavra (int palavra);
 void verificarComando (char *palavra);
 int calcularHash (int palavra);
 int transformarPalavra (char *palavra);
@@ -15,18 +15,25 @@ int letraMenos (char *palavra);
 int letraTrocada (char *palavra);
 int letraErrada (char *palavra);
 void realocarTabela ();
+void ordenarVariacoes ();
 
 typedef struct {
     int chave;
 	char palavras[100];
 } Tabela;
 
+typedef struct {
+    int palavra;
+} Variacoes;
+
 char linha [100];
 char ultimaPalavra [100];
 int tamanhoTabela = 50;
 int qtdElementos = 0;
 int fatorCarga = 0;
+int qtdVariacoes = 0;
 Tabela *tabela;
+Variacoes *variacoes;
 
 
 int main() {
@@ -47,12 +54,21 @@ int main() {
         **/
         if (strlen(linha) > 1) {
             strcpy(ultimaPalavra, linha);
-            if(buscarPalavra(ultimaPalavra) != -1) {
+            if(buscarPalavra(transformarPalavra(ultimaPalavra)) != -1) {
                 printf("ok %s\n", ultimaPalavra);
-                //printf("ok\n");
             }
-            else if (algoritmos(ultimaPalavra) == 1) {
-
+            else if (algoritmos(ultimaPalavra) == 1) { //imprimir lista de variações ordenadas
+                ordenarVariacoes();
+                int i = 0;
+                for (i = 0; i < qtdVariacoes; i++) {
+                    if (variacoes[i].palavra == variacoes[i+1].palavra) {
+                        //faz nada para imprimir só uma vez
+                    }
+                    else {
+                        printf("ok %s\n", tabela[buscarPalavra(variacoes[i].palavra)].palavras);
+                    }
+                }
+                qtdVariacoes = 0;
             }
             else {
                 printf("not found\n");
@@ -64,6 +80,25 @@ int main() {
     return 0;
 }
 
+/**
+    Ordena em ordem alfabética as variações encontradas pelos algoritmos de reconhecimento
+**/
+void ordenarVariacoes () {
+    int temp, i, j;
+    for (j = 1; j < qtdVariacoes; j++) {
+        i = j-1;
+        temp = variacoes[j].palavra;
+        while ((i >= 0) && (temp < variacoes[i].palavra)) {
+            variacoes[i+1].palavra = variacoes[i].palavra;
+            i--;
+        }
+        variacoes[i+1].palavra = temp;
+    }
+}
+
+/**
+    Imprime toda a tabela
+**/
 void imprimirTabela () {
     int i;
     for (i = 0; i < tamanhoTabela; i++) {
@@ -71,8 +106,12 @@ void imprimirTabela () {
     }
 }
 
+/**
+    Executa todos os algoritmos de reconhecimento
+**/
 int algoritmos (char *palavra) {
     int retorno = 0;
+    qtdVariacoes = 0;
 
     if (letraMais(palavra) == 1) {
         retorno = 1;
@@ -90,22 +129,73 @@ int algoritmos (char *palavra) {
     return retorno;
 }
 
+/**
+    Se o usuário digitar uma letra a mais ele retornará a(s) suposta(s) palavra(s) correta(s)
+    Uma letra a mais: a palavra fornecida possui uma letra qualquer a mais comparada à
+original.
+    Ex: "carrro"
+**/
 int letraMais (char *palavra) {
-    return 0;
+    int multiplicador = 128;
+    int i, j = 0;
+    int tamanhoPalavra = strlen(palavra);
+    int somaPalavra = 0;
+    int posicao = 0;
+    int retorno = 0;
+    for (i = 0; i < tamanhoPalavra; i++) {
+        for (j = 0; j < tamanhoPalavra; j++) {
+            if (i == j) {
+                somaPalavra += 0;
+            }
+            else {
+                somaPalavra += palavra[j] * multiplicador++;
+            }
+        }
+        posicao = buscarPalavra(somaPalavra);
+        if (posicao != -1) {
+            qtdVariacoes++;
+            variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
+            variacoes[qtdVariacoes-1].palavra = somaPalavra;
+            retorno = 1;
+        }
+        multiplicador = 128;
+        somaPalavra = 0;
+    }
+    return retorno;
 }
 
+/**
+    Se o usuário digitar uma letra a menos ele retornará a(s) suposta(s) palavra(s) correta(s)
+    Uma letra a menos: a palavra fornecida possui uma letra qualquer a menos em qualquer
+posição.
+    Ex: "caroça"
+**/
 int letraMenos (char *palavra) {
     return 0;
 }
 
+/**
+    Se o usuário digitar duas letras trocadas ele retornará a(s) suposta(s) palavra(s) correta(s)
+    Letras trocadas: a palavra fornecida possui duas letras vizinhas em posições invertidas.
+    Ex: "computdaor"
+**/
 int letraTrocada (char *palavra) {
     return 0;
 }
 
+/**
+    Se o usuário digitar uma letra errada ele retornará a(s) suposta(s) palavra(s) correta(s)
+    Uma letra errada: a palavra correta pode ser construída trocando uma letra da palavra
+original por outra.
+    Ex: "computafor"
+**/
 int letraErrada (char *palavra) {
     return 0;
 }
 
+/**
+    Verifica qual comando deve ser executado
+**/
 void verificarComando (char *palavra) {
     if (strcmp(palavra, "+") == 0) {
         adicionarPalavra (ultimaPalavra);
@@ -115,7 +205,7 @@ void verificarComando (char *palavra) {
     }
     else {  //palavra com apenas uma letra
         strcpy(ultimaPalavra, palavra);
-        if(buscarPalavra(ultimaPalavra) != -1) {
+        if(buscarPalavra(transformarPalavra(ultimaPalavra)) != -1) {
             printf("ok %s\n", ultimaPalavra);
             //printf("ok\n");
         }
@@ -127,20 +217,20 @@ void verificarComando (char *palavra) {
 
 /**
     Busca se a palavra digitada está na Tabela, se estiver retorna a posição exata da mesma
+    Parametro palavra já é a String transformada em um número Natural
 **/
-int buscarPalavra (char *palavra) {
-    if (strcmp(palavra, "") == 0) {
+int buscarPalavra (int palavra) {
+    if (palavra == 0) {
         return -1;
     }
-    int chave = transformarPalavra(palavra);
-    int posicao = calcularHash(chave);
+    int posicao = calcularHash(palavra);
     if (posicao < 0) {  //garante que a posição seja válida
         posicao *= -1;
     }
     int posicaoInicial = posicao;   //Guarda o valor inicial para o caso de a chave não estar na tabela e evitar loop
 
     //Verifica se na tabela a chave e seu conteúdo correspondem
-    while ((tabela[posicao].chave != chave)) {
+    while ((tabela[posicao].chave != palavra)) {
         posicao++;
         if (posicao == tamanhoTabela) {     //Se chegar no final da tabela, deverá ir ao início
             posicao = 0;
@@ -210,7 +300,7 @@ void adicionarPalavra (char *palavra) {
     Faz a busca pela palavra na tabela, se encontrar remove
 **/
 void removerPalavra (char *palavra) {
-    int posicao = buscarPalavra(palavra);
+    int posicao = buscarPalavra(transformarPalavra(palavra));
     if (posicao == -1) {
         printf("fail\n");
     }
