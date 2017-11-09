@@ -48,8 +48,8 @@ int main() {
         if (strlen(linha) > 1) {
             strcpy(ultimaPalavra, linha);
             if(buscarPalavra(ultimaPalavra) != -1) {
-                //printf("ok %s\n", ultimaPalavra);
-                printf("ok\n");
+                printf("ok %s\n", ultimaPalavra);
+                //printf("ok\n");
             }
             else if (algoritmos(ultimaPalavra) == 1) {
 
@@ -59,6 +59,7 @@ int main() {
             }
         }
     }
+    imprimirTabela();
     free (tabela);
     return 0;
 }
@@ -115,8 +116,8 @@ void verificarComando (char *palavra) {
     else {  //palavra com apenas uma letra
         strcpy(ultimaPalavra, palavra);
         if(buscarPalavra(ultimaPalavra) != -1) {
-            //printf("ok %s\n", ultimaPalavra);
-            printf("ok\n");
+            printf("ok %s\n", ultimaPalavra);
+            //printf("ok\n");
         }
         else {
             printf("not found\n");
@@ -193,8 +194,8 @@ void adicionarPalavra (char *palavra) {
     }
     tabela[posicao].chave = chave;
     strcpy(tabela[posicao].palavras, palavra);
-    //printf ("ok %s\n", palavra);
-    printf ("ok\n");
+    printf ("ok %s\n", palavra);
+    //printf ("ok\n");
     qtdElementos++;
     fatorCarga = qtdElementos*100 / tamanhoTabela;
     /**
@@ -215,8 +216,8 @@ void removerPalavra (char *palavra) {
     }
     else {
         tabela[posicao].chave = 0;
-        //printf("ok %s\n", palavra);
-        printf("ok\n");
+        printf("ok %s\n", palavra);
+        //printf("ok\n");
     }
 }
 
