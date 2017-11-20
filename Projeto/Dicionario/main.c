@@ -254,7 +254,6 @@ int letraTrocada (char *palavra) {
             retorno = 1;
         }
         multiplicador = 128;
-        somaPalavra = 0;
     }
 
     return retorno;
@@ -267,7 +266,54 @@ original por outra.
     Ex: "computafor"
 **/
 int letraErrada (char *palavra) {
-    return 0;
+    int multiplicador = 128;
+    int i, j, k, somaPalavra, posicao, retorno = 0;
+    int tamanhoPalavra = strlen(palavra);
+
+    //Busca por hífen
+    for (i = 0; i < tamanhoPalavra; i++) {
+        for (j = 0; j < tamanhoPalavra; j++) {
+            if (i == j) {
+					somaPalavra += 45 * multiplicador++;
+            }
+            else {
+                somaPalavra += palavra[j] * multiplicador++;
+            }
+        }
+        posicao = buscarPalavra(somaPalavra);
+        if (posicao != -1) {
+            qtdVariacoes++;
+            variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
+            variacoes[qtdVariacoes-1].palavra = somaPalavra;
+            retorno = 1;
+        }
+        multiplicador = 128;
+        somaPalavra = 0;
+    }
+
+    for (i = 0; i < tamanhoPalavra; i++) {
+		for (k = 97; k < 123; k++) {
+
+			for (j = 0; j < tamanhoPalavra; j++) {
+				if (i == j) {
+					somaPalavra += k * multiplicador++;
+				}
+				else {
+                    somaPalavra += palavra[j] * multiplicador++;
+				}
+			}
+			posicao = buscarPalavra(somaPalavra);
+			if (posicao != -1) {
+            	qtdVariacoes++;
+            	variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
+            	variacoes[qtdVariacoes-1].palavra = somaPalavra;
+            	retorno = 1;
+        	}
+        	multiplicador = 128;
+        	somaPalavra = 0;
+		}
+	}
+    return retorno;
 }
 
 /**
