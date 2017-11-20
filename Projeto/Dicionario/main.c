@@ -232,7 +232,32 @@ int letraMenos (char *palavra) {
     Ex: "computdaor"
 **/
 int letraTrocada (char *palavra) {
-    return 0;
+    int multiplicador = 128;
+    int i, j, somaPalavra, posicao, retorno = 0;
+    int tamanhoPalavra = strlen(palavra);
+    for (i = 0; i < tamanhoPalavra-1; i++) {
+        somaPalavra = 0;
+        for (j = 0; j < tamanhoPalavra; j++) {
+            if (i == j) {
+                somaPalavra += palavra[j+1] * multiplicador++;
+                somaPalavra += palavra[j++] * multiplicador++;
+            }
+            else {
+                somaPalavra += palavra[j] * multiplicador++;
+            }
+        }
+        posicao = buscarPalavra(somaPalavra);
+        if (posicao != -1) {
+            qtdVariacoes++;
+            variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
+            variacoes[qtdVariacoes-1].palavra = somaPalavra;
+            retorno = 1;
+        }
+        multiplicador = 128;
+        somaPalavra = 0;
+    }
+
+    return retorno;
 }
 
 /**
