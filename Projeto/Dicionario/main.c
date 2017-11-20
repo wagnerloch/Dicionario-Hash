@@ -171,7 +171,59 @@ posição.
     Ex: "caroça"
 **/
 int letraMenos (char *palavra) {
-    return 0;
+    int multiplicador = 128;
+    int i, j, k, somaPalavra, posicao, retorno = 0;
+    int tamanhoPalavra = strlen(palavra);
+    //Busca por hífen
+    for (i = 0; i < tamanhoPalavra+1; i++) {
+        for (j = 0; j < tamanhoPalavra+1; j++) {
+            if (i == j) {
+					somaPalavra += 45 * multiplicador++;
+            }
+            else if (j > i){
+                somaPalavra += palavra[j-1] * multiplicador++;
+            }
+            else {
+                somaPalavra += palavra[j] * multiplicador++;
+            }
+        }
+        posicao = buscarPalavra(somaPalavra);
+        if (posicao != -1) {
+            qtdVariacoes++;
+            variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
+            variacoes[qtdVariacoes-1].palavra = somaPalavra;
+            retorno = 1;
+        }
+        multiplicador = 128;
+        somaPalavra = 0;
+    }
+    //Outras letras
+    for (i = 0; i < tamanhoPalavra+1; i++) {
+		for (k = 97; k < 123; k++) {
+
+			for (j = 0; j < tamanhoPalavra+1; j++) {
+				if (i == j) {
+					somaPalavra += k * multiplicador++;
+				}
+				else if (j > i){
+					somaPalavra += palavra[j-1] * multiplicador++;
+				}
+				else {
+                    somaPalavra += palavra[j] * multiplicador++;
+				}
+			}
+			posicao = buscarPalavra(somaPalavra);
+			if (posicao != -1) {
+            	qtdVariacoes++;
+            	variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
+            	variacoes[qtdVariacoes-1].palavra = somaPalavra;
+            	retorno = 1;
+        	}
+        	multiplicador = 128;
+        	somaPalavra = 0;
+		}
+	}
+	return retorno;
 }
 
 /**
