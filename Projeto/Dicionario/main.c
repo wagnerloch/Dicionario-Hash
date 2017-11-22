@@ -32,6 +32,13 @@ int tamanhoTabela = 50;
 int qtdElementos = 0;
 int fatorCarga = 0;
 int qtdVariacoes = 0;
+int primos [] = {1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101,
+103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229,
+233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373,
+379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521,
+523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673,
+677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839,
+853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991};
 Tabela *tabela;
 Variacoes *variacoes;
 
@@ -77,6 +84,7 @@ int main() {
     }
     imprimirTabela();
     free (tabela);
+    free (variacoes);
     return 0;
 }
 
@@ -125,7 +133,6 @@ int algoritmos (char *palavra) {
     if (letraErrada(palavra) == 1) {
         retorno = 1;
     }
-
     return retorno;
 }
 
@@ -136,7 +143,7 @@ original.
     Ex: "carrro"
 **/
 int letraMais (char *palavra) {
-    int multiplicador = 128;
+    int multiplicador = 0;
     int i, j = 0;
     int tamanhoPalavra = strlen(palavra);
     int somaPalavra = 0;
@@ -148,7 +155,7 @@ int letraMais (char *palavra) {
                 somaPalavra += 0;
             }
             else {
-                somaPalavra += palavra[j] * multiplicador++;
+                somaPalavra += palavra[j] * primos[multiplicador++];
             }
         }
         posicao = buscarPalavra(somaPalavra);
@@ -158,7 +165,7 @@ int letraMais (char *palavra) {
             variacoes[qtdVariacoes-1].palavra = somaPalavra;
             retorno = 1;
         }
-        multiplicador = 128;
+        multiplicador = 0;
         somaPalavra = 0;
     }
     return retorno;
@@ -171,20 +178,20 @@ posição.
     Ex: "caroça"
 **/
 int letraMenos (char *palavra) {
-    int multiplicador = 128;
+    int multiplicador = 0;
     int i, j, k, somaPalavra, posicao, retorno = 0;
     int tamanhoPalavra = strlen(palavra);
     //Busca por hífen
     for (i = 0; i < tamanhoPalavra+1; i++) {
         for (j = 0; j < tamanhoPalavra+1; j++) {
             if (i == j) {
-					somaPalavra += 45 * multiplicador++;
+					somaPalavra += 45 * primos[multiplicador++];
             }
             else if (j > i){
-                somaPalavra += palavra[j-1] * multiplicador++;
+                somaPalavra += palavra[j-1] * primos[multiplicador++];
             }
             else {
-                somaPalavra += palavra[j] * multiplicador++;
+                somaPalavra += palavra[j] * primos[multiplicador++];
             }
         }
         posicao = buscarPalavra(somaPalavra);
@@ -194,22 +201,24 @@ int letraMenos (char *palavra) {
             variacoes[qtdVariacoes-1].palavra = somaPalavra;
             retorno = 1;
         }
-        multiplicador = 128;
+        multiplicador = 0;
         somaPalavra = 0;
     }
     //Outras letras
+    multiplicador = 0;
+    somaPalavra = 0;
     for (i = 0; i < tamanhoPalavra+1; i++) {
 		for (k = 97; k < 123; k++) {
 
 			for (j = 0; j < tamanhoPalavra+1; j++) {
 				if (i == j) {
-					somaPalavra += k * multiplicador++;
+					somaPalavra += k * primos[multiplicador++];
 				}
 				else if (j > i){
-					somaPalavra += palavra[j-1] * multiplicador++;
+					somaPalavra += palavra[j-1] * primos[multiplicador++];
 				}
 				else {
-                    somaPalavra += palavra[j] * multiplicador++;
+                    somaPalavra += palavra[j] * primos[multiplicador++];
 				}
 			}
 			posicao = buscarPalavra(somaPalavra);
@@ -219,7 +228,7 @@ int letraMenos (char *palavra) {
             	variacoes[qtdVariacoes-1].palavra = somaPalavra;
             	retorno = 1;
         	}
-        	multiplicador = 128;
+        	multiplicador = 0;
         	somaPalavra = 0;
 		}
 	}
@@ -232,18 +241,18 @@ int letraMenos (char *palavra) {
     Ex: "computdaor"
 **/
 int letraTrocada (char *palavra) {
-    int multiplicador = 128;
+    int multiplicador = 0;
     int i, j, somaPalavra, posicao, retorno = 0;
     int tamanhoPalavra = strlen(palavra);
     for (i = 0; i < tamanhoPalavra-1; i++) {
         somaPalavra = 0;
         for (j = 0; j < tamanhoPalavra; j++) {
             if (i == j) {
-                somaPalavra += palavra[j+1] * multiplicador++;
-                somaPalavra += palavra[j++] * multiplicador++;
+                somaPalavra += palavra[j+1] * primos[multiplicador++];
+                somaPalavra += palavra[j++] * primos[multiplicador++];
             }
             else {
-                somaPalavra += palavra[j] * multiplicador++;
+                somaPalavra += palavra[j] * primos[multiplicador++];
             }
         }
         posicao = buscarPalavra(somaPalavra);
@@ -253,7 +262,7 @@ int letraTrocada (char *palavra) {
             variacoes[qtdVariacoes-1].palavra = somaPalavra;
             retorno = 1;
         }
-        multiplicador = 128;
+        multiplicador = 0;
     }
 
     return retorno;
@@ -266,7 +275,7 @@ original por outra.
     Ex: "computafor"
 **/
 int letraErrada (char *palavra) {
-    int multiplicador = 128;
+    int multiplicador = 0;
     int i, j, k, somaPalavra, posicao, retorno = 0;
     int tamanhoPalavra = strlen(palavra);
 
@@ -274,10 +283,10 @@ int letraErrada (char *palavra) {
     for (i = 0; i < tamanhoPalavra; i++) {
         for (j = 0; j < tamanhoPalavra; j++) {
             if (i == j) {
-					somaPalavra += 45 * multiplicador++;
+					somaPalavra += 45 * primos[multiplicador++];
             }
             else {
-                somaPalavra += palavra[j] * multiplicador++;
+                somaPalavra += palavra[j] * primos[multiplicador++];
             }
         }
         posicao = buscarPalavra(somaPalavra);
@@ -287,7 +296,7 @@ int letraErrada (char *palavra) {
             variacoes[qtdVariacoes-1].palavra = somaPalavra;
             retorno = 1;
         }
-        multiplicador = 128;
+        multiplicador = 0;
         somaPalavra = 0;
     }
 
@@ -296,10 +305,10 @@ int letraErrada (char *palavra) {
 
 			for (j = 0; j < tamanhoPalavra; j++) {
 				if (i == j) {
-					somaPalavra += k * multiplicador++;
+					somaPalavra += k * primos[multiplicador++];
 				}
 				else {
-                    somaPalavra += palavra[j] * multiplicador++;
+                    somaPalavra += palavra[j] * primos[multiplicador++];
 				}
 			}
 			posicao = buscarPalavra(somaPalavra);
@@ -309,7 +318,7 @@ int letraErrada (char *palavra) {
             	variacoes[qtdVariacoes-1].palavra = somaPalavra;
             	retorno = 1;
         	}
-        	multiplicador = 128;
+        	multiplicador = 0;
         	somaPalavra = 0;
 		}
 	}
@@ -440,11 +449,11 @@ void removerPalavra (char *palavra) {
 **/
 int transformarPalavra (char *palavra) {
     int i;
-    int multiplicador = 128;
+    int multiplicador = 0;
     int somaAscii = 0;
     somaAscii *= palavra[0];
     for (i = 0; i < strlen(palavra); i++) {
-        somaAscii += palavra[i] * multiplicador;
+        somaAscii += palavra[i] * primos[multiplicador];
         multiplicador++;
     }
     return somaAscii;
