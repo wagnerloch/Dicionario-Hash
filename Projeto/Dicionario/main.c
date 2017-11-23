@@ -61,7 +61,8 @@ int main() {
         **/
         if (strlen(linha) > 1) {
             strcpy(ultimaPalavra, linha);
-            if(buscarPalavra(transformarPalavra(ultimaPalavra)) != -1) {
+            int posicao = buscarPalavra(transformarPalavra(ultimaPalavra));
+            if(posicao != -1 && strcmp(tabela[posicao].palavras, ultimaPalavra) == 0) {
                 printf("ok %s\n", ultimaPalavra);
             }
             else if (algoritmos(ultimaPalavra) == 1) { //imprimir lista de variações ordenadas
@@ -181,41 +182,60 @@ int letraMenos (char *palavra) {
     int multiplicador = 0;
     int i, j, k, somaPalavra, posicao, retorno = 0;
     int tamanhoPalavra = strlen(palavra);
+    char palavraAuxiliar [tamanhoPalavra+1];
+    strcpy (palavraAuxiliar, palavra);
+    //printf("Palavra: %s PalavraAuxiliar: %s TamanhoPal: %d TamanhoAux: %d\n", palavra, palavraAuxiliar, tamanhoPalavra, strlen(palavraAuxiliar));
     //Busca por hífen
     for (i = 0; i < tamanhoPalavra+1; i++) {
         for (j = 0; j < tamanhoPalavra+1; j++) {
             if (i == j) {
-					somaPalavra += 45 * primos[multiplicador++];
+                somaPalavra += 45 * primos[multiplicador++];
+                palavraAuxiliar[j] = 45;
             }
             else if (j > i){
                 somaPalavra += palavra[j-1] * primos[multiplicador++];
+                palavraAuxiliar[j] = palavra[j-1];
             }
             else {
                 somaPalavra += palavra[j] * primos[multiplicador++];
+                //palavraAuxiliar[j] = palavra[j];
             }
         }
+        //palavraAuxiliar[strlen(palavraAuxiliar)] = '\0';
+        //printf("%s tamanho: %d\n", palavraAuxiliar, strlen(palavraAuxiliar));
         posicao = buscarPalavra(somaPalavra);
         if (posicao != -1) {
-            qtdVariacoes++;
+            //printf("ACHOU\n");
+            /*qtdVariacoes++;
             variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
             variacoes[qtdVariacoes-1].palavra = somaPalavra;
-            retorno = 1;
+            retorno = 1;*/
+            if (strcmp(palavraAuxiliar, tabela[posicao].palavras) == 0) {
+                qtdVariacoes++;
+                variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
+                variacoes[qtdVariacoes-1].palavra = somaPalavra;
+                retorno = 1;
+            }
         }
+        strcpy (palavraAuxiliar, palavra);
         multiplicador = 0;
         somaPalavra = 0;
     }
     //Outras letras
     multiplicador = 0;
     somaPalavra = 0;
+    strcpy (palavraAuxiliar, palavra);
     for (i = 0; i < tamanhoPalavra+1; i++) {
 		for (k = 97; k < 123; k++) {
 
 			for (j = 0; j < tamanhoPalavra+1; j++) {
 				if (i == j) {
 					somaPalavra += k * primos[multiplicador++];
+					palavraAuxiliar[j] = k;
 				}
 				else if (j > i){
 					somaPalavra += palavra[j-1] * primos[multiplicador++];
+					palavraAuxiliar[j] = palavra[j-1];
 				}
 				else {
                     somaPalavra += palavra[j] * primos[multiplicador++];
@@ -223,11 +243,12 @@ int letraMenos (char *palavra) {
 			}
 			posicao = buscarPalavra(somaPalavra);
 			if (posicao != -1) {
-            	qtdVariacoes++;
+                qtdVariacoes++;
             	variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
             	variacoes[qtdVariacoes-1].palavra = somaPalavra;
             	retorno = 1;
         	}
+        	strcpy (palavraAuxiliar, palavra);
         	multiplicador = 0;
         	somaPalavra = 0;
 		}
@@ -257,10 +278,16 @@ int letraTrocada (char *palavra) {
         }
         posicao = buscarPalavra(somaPalavra);
         if (posicao != -1) {
-            qtdVariacoes++;
-            variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
-            variacoes[qtdVariacoes-1].palavra = somaPalavra;
-            retorno = 1;
+            char palavraAuxiliar [tamanhoPalavra];
+            strcpy (palavraAuxiliar, palavra);
+            palavraAuxiliar[i] = palavra[i+1];
+            palavraAuxiliar[i+1] = palavra[i];
+            if (strcmp(palavraAuxiliar, tabela[posicao].palavras) == 0) {
+                qtdVariacoes++;
+                variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
+                variacoes[qtdVariacoes-1].palavra = somaPalavra;
+                retorno = 1;
+            }
         }
         multiplicador = 0;
     }
@@ -291,10 +318,15 @@ int letraErrada (char *palavra) {
         }
         posicao = buscarPalavra(somaPalavra);
         if (posicao != -1) {
-            qtdVariacoes++;
-            variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
-            variacoes[qtdVariacoes-1].palavra = somaPalavra;
-            retorno = 1;
+            char palavraAuxiliar [tamanhoPalavra];
+            strcpy (palavraAuxiliar, palavra);
+            palavraAuxiliar[i] = 45;
+            if (strcmp(palavraAuxiliar, tabela[posicao].palavras) == 0) {
+                qtdVariacoes++;
+                variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
+                variacoes[qtdVariacoes-1].palavra = somaPalavra;
+                retorno = 1;
+            }
         }
         multiplicador = 0;
         somaPalavra = 0;
@@ -313,10 +345,15 @@ int letraErrada (char *palavra) {
 			}
 			posicao = buscarPalavra(somaPalavra);
 			if (posicao != -1) {
-            	qtdVariacoes++;
-            	variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
-            	variacoes[qtdVariacoes-1].palavra = somaPalavra;
-            	retorno = 1;
+                char palavraAuxiliar [tamanhoPalavra];
+                strcpy (palavraAuxiliar, palavra);
+                palavraAuxiliar[i] = k;
+                if (strcmp(palavraAuxiliar, tabela[posicao].palavras) == 0) {
+                    qtdVariacoes++;
+                    variacoes = (Variacoes*) realloc (variacoes, qtdVariacoes*sizeof(Variacoes));
+                    variacoes[qtdVariacoes-1].palavra = somaPalavra;
+                    retorno = 1;
+                }
         	}
         	multiplicador = 0;
         	somaPalavra = 0;
@@ -392,7 +429,7 @@ void adicionarPalavra (char *palavra) {
     Identifica se já existe uma chave na posição atual, se for a mesma chave, retorna erro e não adiciona
     Se for outra chave, pula uma posição até encontrar uma vaga vazia
     **/
-    if (tabela[posicao].chave == chave) {
+    if (tabela[posicao].chave == chave && strcmp(tabela[posicao].palavras, palavra) == 0) {
         printf("fail\n");
         return;
     }
@@ -402,7 +439,7 @@ void adicionarPalavra (char *palavra) {
             Identifica se já existe uma chave na posição atual, se for a mesma chave, retorna erro e não adiciona
             Se for outra chave, pula uma posição até encontrar uma vaga vazia
             **/
-            if (tabela[posicao].chave == chave) {
+            if (tabela[posicao].chave == chave && strcmp(tabela[posicao].palavras, palavra) == 0) {
                 printf("fail\n");
             }
             posicao++;
@@ -445,7 +482,6 @@ void removerPalavra (char *palavra) {
 
 /**
     Função que transforma uma string em um número Natural
-    Solução proposta por Cormen, página 186
 **/
 int transformarPalavra (char *palavra) {
     int i;
