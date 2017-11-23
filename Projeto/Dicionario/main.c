@@ -156,7 +156,8 @@ int letraMais (char *palavra) {
                 somaPalavra += 0;
             }
             else {
-                somaPalavra += palavra[j] * primos[multiplicador++] * multiplicador;
+                somaPalavra += palavra[j] * multiplicador * primos[multiplicador];
+                multiplicador++;
             }
         }
         posicao = buscarPalavra(somaPalavra);
@@ -189,15 +190,18 @@ int letraMenos (char *palavra) {
     for (i = 0; i < tamanhoPalavra+1; i++) {
         for (j = 0; j < tamanhoPalavra+1; j++) {
             if (i == j) {
-                somaPalavra += 45 * primos[multiplicador++] * multiplicador;
+                somaPalavra += 45 * multiplicador * primos[multiplicador];
+                multiplicador++;
                 palavraAuxiliar[j] = 45;
             }
             else if (j > i){
-                somaPalavra += palavra[j-1] * primos[multiplicador++] * multiplicador;
+                somaPalavra += palavra[j-1] * multiplicador * primos[multiplicador];
+                multiplicador++;
                 palavraAuxiliar[j] = palavra[j-1];
             }
             else {
-                somaPalavra += palavra[j] * primos[multiplicador++] * multiplicador;
+                somaPalavra += palavra[j] * multiplicador * primos[multiplicador];
+                multiplicador++;
                 //palavraAuxiliar[j] = palavra[j];
             }
         }
@@ -230,15 +234,18 @@ int letraMenos (char *palavra) {
 
 			for (j = 0; j < tamanhoPalavra+1; j++) {
 				if (i == j) {
-					somaPalavra += k * primos[multiplicador++] * multiplicador;
+					somaPalavra += k * multiplicador * primos[multiplicador];
+					multiplicador++;
 					palavraAuxiliar[j] = k;
 				}
 				else if (j > i){
-					somaPalavra += palavra[j-1] * primos[multiplicador++] * multiplicador;
+					somaPalavra += palavra[j-1] * multiplicador * primos[multiplicador];
+					multiplicador++;
 					palavraAuxiliar[j] = palavra[j-1];
 				}
 				else {
-                    somaPalavra += palavra[j] * primos[multiplicador++] * multiplicador;
+                    somaPalavra += palavra[j] * multiplicador * primos[multiplicador];
+                    multiplicador++;
 				}
 			}
 			posicao = buscarPalavra(somaPalavra);
@@ -269,11 +276,14 @@ int letraTrocada (char *palavra) {
         somaPalavra = 0;
         for (j = 0; j < tamanhoPalavra; j++) {
             if (i == j) {
-                somaPalavra += palavra[j+1] * primos[multiplicador++] * multiplicador;
-                somaPalavra += palavra[j++] * primos[multiplicador++] * multiplicador;
+                somaPalavra += palavra[j+1] * multiplicador * primos[multiplicador];
+                multiplicador++;
+                somaPalavra += palavra[j++] * multiplicador * primos[multiplicador];
+                multiplicador++;
             }
             else {
-                somaPalavra += palavra[j] * primos[multiplicador++] * multiplicador;
+                somaPalavra += palavra[j] * multiplicador * primos[multiplicador];
+                multiplicador++;
             }
         }
         posicao = buscarPalavra(somaPalavra);
@@ -310,10 +320,12 @@ int letraErrada (char *palavra) {
     for (i = 0; i < tamanhoPalavra; i++) {
         for (j = 0; j < tamanhoPalavra; j++) {
             if (i == j) {
-					somaPalavra += 45 * primos[multiplicador++] * multiplicador;
+                somaPalavra += 45 * multiplicador * primos[multiplicador];
+                multiplicador++;
             }
             else {
-                somaPalavra += palavra[j] * primos[multiplicador++] * multiplicador;
+                somaPalavra += palavra[j] * multiplicador * primos[multiplicador];
+                multiplicador++;
             }
         }
         posicao = buscarPalavra(somaPalavra);
@@ -334,13 +346,14 @@ int letraErrada (char *palavra) {
 
     for (i = 0; i < tamanhoPalavra; i++) {
 		for (k = 97; k < 123; k++) {
-
 			for (j = 0; j < tamanhoPalavra; j++) {
 				if (i == j) {
-					somaPalavra += k * primos[multiplicador++] * multiplicador;
+					somaPalavra += k * multiplicador * primos[multiplicador];
+					multiplicador++;
 				}
 				else {
-                    somaPalavra += palavra[j] * primos[multiplicador++] * multiplicador;
+                    somaPalavra += palavra[j] * multiplicador * primos[multiplicador];
+                    multiplicador++;
 				}
 			}
 			posicao = buscarPalavra(somaPalavra);
@@ -489,7 +502,8 @@ int transformarPalavra (char *palavra) {
     int somaAscii = 0;
     somaAscii *= palavra[0];
     for (i = 0; i < strlen(palavra); i++) {
-        somaAscii += palavra[i] * primos[multiplicador++] * multiplicador;
+        somaAscii += palavra[i] * multiplicador * primos[multiplicador];
+        multiplicador++;
     }
     return somaAscii;
 }
